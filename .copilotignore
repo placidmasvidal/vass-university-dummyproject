@@ -1,0 +1,41 @@
+# Secretos y configuraciones sensibles
+
+.env
+
+.env.local
+
+.env.*
+
+*.key
+
+*.pem
+
+*.secret
+
+secrets/
+
+credentials/
+
+config/secrets/
+
+# Código legacy crítico (según política de tu empresa)
+
+
+
+# Archivos generados (no necesitan contexto)
+
+all/target/
+
+core/target/
+
+it.tests/target/
+
+ui.apps/target/
+
+ui.apps.structure/target/
+
+ui.config/target/
+
+ui.content/target/
+
+ui.tests/target/

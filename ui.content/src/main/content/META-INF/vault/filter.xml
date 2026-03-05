@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspaceFilter version="1.0">
+    <filter root="/conf/vass-university-dummyproject" mode="merge"/>
+    <filter root="/content/vass-university-dummyproject" mode="merge"/>
+    <filter root="/content/dam/vass-university-dummyproject" mode="merge">
+        <exclude pattern="/content/dam/vass-university-dummyproject(/.*)?"/>
+        <include pattern="/content/dam/vass-university-dummyproject/jcr:content(/.*)?"/>
+    </filter>
+    <filter root="/content/dam/vass-university-dummyproject/asset.jpg" mode="merge"/>
+    <filter root="/content/experience-fragments/vass-university-dummyproject" mode="merge"/>
+</workspaceFilter>

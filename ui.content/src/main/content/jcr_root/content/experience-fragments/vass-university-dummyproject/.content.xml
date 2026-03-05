@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    cq:adobeTargetExportFormat="html"
+    cq:allowedTemplates="[/conf/vass-university-dummyproject/settings/wcm/templates/(?!page-).*]"
+    cq:conf="/conf/vass-university-dummyproject"
+    jcr:primaryType="sling:OrderedFolder"
+    jcr:title="VASS.University.dummyproject Fragments"
+    sling:configRef="/conf/vass-university-dummyproject">
+    <us/>
+</jcr:root>

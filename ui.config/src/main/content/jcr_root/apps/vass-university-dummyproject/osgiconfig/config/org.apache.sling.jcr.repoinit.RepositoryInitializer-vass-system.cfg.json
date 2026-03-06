@@ -1,0 +1,7 @@
+{
+  "scripts": [
+    "create service user vass-system with path /home/users/system/vass/vass-system",
+    "add principal vass-system to group administrators"
+  ]
+}
+

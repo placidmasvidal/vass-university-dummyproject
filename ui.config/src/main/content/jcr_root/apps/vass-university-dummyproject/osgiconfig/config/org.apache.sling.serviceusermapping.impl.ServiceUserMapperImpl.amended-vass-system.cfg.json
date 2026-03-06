@@ -1,0 +1,6 @@
+{
+  "user.mapping": [
+    "vass-university-dummyproject.core:vass-system-subservice=vass-system"
+  ],
+  "user.default": ""
+}

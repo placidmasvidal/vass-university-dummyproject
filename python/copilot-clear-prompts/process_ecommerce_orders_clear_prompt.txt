@@ -1,0 +1,11 @@
+Actúa como ingeniero senior y entrega solución productiva (no boceto) para procesar pedidos e-commerce.
+[C] Reglas: validar stock por item, calcular total con IVA 19%, aplicar descuentos, generar seguimiento `PED-YYYYMMDD-XXXX`, devolver `Pedido(estado="pendiente")`.
+[L] Python 3.10+, PEP 8, type hints obligatorios, usar `pandas.DataFrame` para pedidos/stock y `pydantic` para validar entrada/salida.
+[E] Debe funcionar con: `procesar_pedidos([{"item":"A","cantidad":2}], usuario="juan")`.
+[A] Supuestos: lista puede estar vacía, puede haber cantidad 0, no todos los usuarios son válidos, puede haber items repetidos.
+[A] Excepciones: `ValueError` si stock insuficiente; `ValueError` si usuario no existe.
+[A] Definir y documentar catálogos en memoria: usuarios válidos, precios, stock, y política de descuento explícita.
+[R] Entrega código completo ejecutable (sin pseudocódigo), incluyendo modelos, función principal y utilidades.
+[R] Incluye tests mínimos (happy path, stock insuficiente, usuario inválido, lista vacía, cantidad 0, item repetido).
+[R] Añade comandos de ejecución y una checklist final ✅/❌ de cumplimiento de requisitos.
+Valida también que el seguimiento cumpla regex: `^PED-\d{8}-[A-Z0-9]{4}$`.

@@ -19,6 +19,11 @@ import org.osgi.service.component.annotations.Modified;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import com.google.gson.Gson;
+
 /**
  * Default OSGi implementation of {@link FavoritesService}.
  *
@@ -144,10 +149,32 @@ public class FavoritesServiceImpl implements FavoritesService {
         favorite.setSite(request.getParameter("site"));
         favorite.setUser(request.getParameter("user"));
 
-        // Prepared payload for the outbound call.
-        new com.google.gson.Gson().toJsonTree(favorite);
+        String jsonPayload = new Gson().toJson(favorite);
 
-        return null;
+        return postFavorite(jsonPayload);
+    }
+
+    private FavoritesRespModel postFavorite(String jsonPayload) {
+        String url = favoritesConfiguration.favorites_domain() + favoritesConfiguration.endpoint_add_favorite();
+
+        HttpPost postRequest = new HttpPost(url);
+        postRequest.setHeader(HttpHeaders.USER_AGENT, userAgentHeader());
+        postRequest.setHeader(HttpHeaders.ACCEPT, acceptHeader());
+        postRequest.setEntity(new StringEntity(jsonPayload, ContentType.APPLICATION_JSON));
+
+        try {
+            return httpClient.execute(postRequest, response -> {
+                int statusCode = response.getStatusLine().getStatusCode();
+                String responseBody = new String(response.getEntity().getContent().readAllBytes());
+
+                FavoritesRespModel respModel = new FavoritesRespModel();
+                respModel.setStatusCode(statusCode);
+                respModel.setResponseBody(responseBody);
+                return respModel;
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

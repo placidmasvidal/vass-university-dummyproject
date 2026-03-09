@@ -13,6 +13,12 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 @ObjectClassDefinition(name = "ICEX - Favorites Configuration", description = "Configure the Favorites Details")
 public @interface FavoritesConfiguration {
 
+    @AttributeDefinition(name = "favorites_domain", description = "Favorites endpoint Domain", type = AttributeType.STRING)
+    String favorites_domain() default "https://vasscompany.appservices..favorites.com";
+
+    @AttributeDefinition(name = "endpoint_add_favorite", description = "Favorites endpoint add favorite", type = AttributeType.STRING)
+    String endpoint_add_favorite() default "/appportalservices/favorites/create";
+
     /**
      * Socket timeout in milliseconds.
      *

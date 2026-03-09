@@ -9,4 +9,10 @@ import java.util.List;
 @Data
 public class FavoritesRespModel {
     private List<FavoritesModel> favorites = new ArrayList<>();
+
+    private int statusCode;
+
+    private String message;
+
+    private String responseBody;
 }

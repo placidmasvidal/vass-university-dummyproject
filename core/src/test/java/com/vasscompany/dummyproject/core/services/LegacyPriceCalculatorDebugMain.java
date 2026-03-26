@@ -1,4 +1,6 @@
-package com.vasscompany.dummyproject.core.services.lab1_1RefactoringCopilot.impl;
+package com.vasscompany.dummyproject.core.services;
+
+import com.vasscompany.dummyproject.core.services.lab1_1RefactoringCopilot.impl.LegacyPriceCalculatorServiceImpl;
 
 public class LegacyPriceCalculatorDebugMain {
 

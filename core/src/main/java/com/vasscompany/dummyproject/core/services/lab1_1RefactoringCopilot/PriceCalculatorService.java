@@ -36,7 +36,9 @@ public interface PriceCalculatorService {
 
     // Firma no válida, sin nombres descriptivos generada de primeras por copilot con el prompt arriba proporcionado: double calculateFinalPrice(double a, double b, double c, double d);
     // modifica la firma anterior para que use nombres descriptivos y no deje dudas sobre el propósito de cada parámetro
-    double calculateFinalPrice(double basePrice, double taxRate, double discount, double divisor);  // FIrma correcta proporcionada por Copilot tras el prompt de corrección
+    // Firma mejorada pero aun no válidadouble calculateFinalPrice(double basePrice, double taxRate, double discount, double divisor);
+    // Firma válida:
+    double calculateFinalPrice(double baseValue, double multiplier, double dividend, double divisor);
 
     boolean isPriceValidForType(PriceType priceType, double price, String config);
 }

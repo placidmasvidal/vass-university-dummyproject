@@ -16,22 +16,23 @@ public class PriceCalculatorServiceImpl implements PriceCalculatorService {
     // El caso calculateFinalPrice(10, 5, 20, 4) debe retornar exactamente 52.5.
     // Sustituye la lógica de proc(String, ...) por lógica basada en PriceType.
 
-    public double calculateFinalPrice(double basePrice, double taxRate, double discount, double divisor) {
-        if (Double.isNaN(basePrice) || Double.isNaN(taxRate) || Double.isNaN(discount) || Double.isNaN(divisor)) {
+    // Asegúrate de que el método calculateFinalPrice cumpla con el resultado esperado: 10, 5, 20, 4 -> 52.5 usando la firma baseValue, multiplier, dividend y divisor
+    @Override
+    public double calculateFinalPrice(double baseValue, double multiplier, double dividend, double divisor) {
+        if (Double.isNaN(baseValue) || Double.isNaN(multiplier) || Double.isNaN(dividend) || Double.isNaN(divisor)) {
             throw new IllegalArgumentException("Los parámetros no pueden ser NaN");
         }
-        if (Double.isInfinite(basePrice) || Double.isInfinite(taxRate) || Double.isInfinite(discount) || Double.isInfinite(divisor)) {
+        if (Double.isInfinite(baseValue) || Double.isInfinite(multiplier) || Double.isInfinite(dividend) || Double.isInfinite(divisor)) {
             throw new IllegalArgumentException("Los parámetros no pueden ser infinitos");
         }
         if (divisor == 0) {
             throw new IllegalArgumentException("El divisor no puede ser cero");
         }
-        double taxAmount = basePrice * (taxRate / 100);
-        double discountedPrice = basePrice - discount;
-        double finalPrice = (discountedPrice + taxAmount) / divisor;
-        return Math.round(finalPrice * 100.0) / 100.0;
+        double result = (baseValue * multiplier + dividend) / divisor;
+        return Math.round(result * 100.0) / 100.0;
     }
 
+    @Override
     public boolean isPriceValidForType(PriceType priceType, double price, String config) {
         if (priceType == null) return false;
         switch (priceType) {

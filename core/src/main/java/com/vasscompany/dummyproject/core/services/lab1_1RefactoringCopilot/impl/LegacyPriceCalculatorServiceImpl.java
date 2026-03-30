@@ -48,6 +48,13 @@ public class LegacyPriceCalculatorServiceImpl {
         double result = z / 2;
         return Math.round(result * 100.0) / 100.0;
     }*/
+// El servicio nuevo NO debe conservar la fórmula defectuosa del legacy.
+// Debe implementar la regla de negocio correcta del laboratorio.
+// El caso calculateFinalPrice(10, 5, 20, 4) debe retornar 52.5.
+// Usa una interfaz PriceCalculatorService y una implementación PriceCalculatorServiceImpl.
+// Registra el componente como @Component(service = PriceCalculatorService.class, immediate = true).
+// Sustituye proc(String, ...) por isPriceValidForType(PriceType, ...).
+// No mezcles acceso a configuración del sistema con la lógica de cálculo.
     public Double calc(double a, double b, double c, double d) {
         if (Double.isNaN(a) || Double.isNaN(b) || Double.isNaN(c) || Double.isNaN(d)) {
             throw new IllegalArgumentException("Los parámetros no pueden ser NaN");
@@ -58,7 +65,6 @@ public class LegacyPriceCalculatorServiceImpl {
         if (d == 0) {
             throw new IllegalArgumentException("El divisor no puede ser cero");
         }
-
         double x = a * b;
         double y = c / d;
         double z = (x + y) * 2;

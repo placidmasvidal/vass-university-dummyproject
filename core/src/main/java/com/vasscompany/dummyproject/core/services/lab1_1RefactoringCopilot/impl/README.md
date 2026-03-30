@@ -142,7 +142,7 @@ proc("C", -1, "cfg")  // ¿Qué retorna?
 Usa la técnica **CLEAR** aprendida en la sesión 1.2 para diseñar prompts completos para cada artefacto:
 
 - **C**ontext: ¿Qué problema resuelve este servicio? ¿Dónde encaja en AEM?
-- **L**anguage: Java 11, OSGi DS annotations, Javadoc, SLF4J, Google Java Style
+- **L**anguage: Java 21, OSGi DS annotations, Javadoc, SLF4J, Google Java Style
 - **E**xamples: Ejemplos de uso con inputs y outputs esperados
 - **A**ssumptions: ¿Qué asumimos sobre los inputs? ¿El servicio es stateless?
 - **R**esults: ¿Qué retorna? ¿Qué excepciones lanza? ¿Qué registra en el `@Component`?

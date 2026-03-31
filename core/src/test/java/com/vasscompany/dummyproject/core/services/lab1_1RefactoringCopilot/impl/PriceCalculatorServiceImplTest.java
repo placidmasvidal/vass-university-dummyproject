@@ -2,6 +2,9 @@ package com.vasscompany.dummyproject.core.services.lab1_1RefactoringCopilot.impl
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class PriceCalculatorServiceImplTest {
 
     private final PriceCalculatorServiceImpl service = new PriceCalculatorServiceImpl();
@@ -15,4 +18,14 @@ public class PriceCalculatorServiceImplTest {
     }
     // Implementa test para isPriceValidForType con cada tipo de PriceType y casos límite
 
+    @Test
+    void testCalculateFinalPriceCasoBasico() {
+        assertEquals(52.5, service.calculateFinalPrice(10, 5, 20, 4), 0.001);
+    }
+
+    @Test
+    void testCalculateFinalPriceDivisorCero() {
+        assertThrows(IllegalArgumentException.class,
+                () -> service.calculateFinalPrice(10, 5, 20, 0));
+    }
 }

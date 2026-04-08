@@ -57,6 +57,15 @@ public class ShippingCalculatorServiceImpl implements ShippingCalculatorService 
 
     }
 
+    // Implementa SOLO calculateDeliveryTime siguiendo README y tests del paquete lab1_2ImplementacionPrompting.
+    // Requisitos:
+    // - No cambies firma, imports ni otros métodos.
+    // - Mantén validaciones actuales de entrada.
+    // - Usa reglas exactas de negocio definidas por tests/README (sin inventar).
+    // - Devuelve int final según tipo de envío y distancia.
+    // - Incluye mínimo de días y redondeo/regla de tramo EXACTOS según tests.
+    // Caso ancla: EXPRESS con 250 km debe devolver el valor esperado por test.
+    // Si hay conflicto, prioriza tests sobre suposiciones.
     @Override
     public int calculateDeliveryTime(double distanceKm, ShippingType shippingType) {
         if (distanceKm < 0) {
@@ -66,10 +75,34 @@ public class ShippingCalculatorServiceImpl implements ShippingCalculatorService 
             throw new IllegalArgumentException("shippingType no puede ser null");
         }
 
-        // TDD bootstrap: valor temporal hasta implementar reglas de negocio.
-        return 0;
+        // Reglas exactas:
+        // Mira plantilla planificacion_lab_1.2.md y README, así como los tests del paquete lab1_2ImplementacionPrompting para definir reglas exactas de negocio.
+
+        // Reglas exactas por tipo de envío (días fijos, independientes de la distancia):
+        // - EXPRESS:  2 días
+        // - STANDARD: 5 días
+        // - ECONOMY: 10 días
+        // Caso ancla: EXPRESS (250km) -> 2
+        switch (shippingType) {
+            case EXPRESS:
+                return 2;
+            case STANDARD:
+                return 5;
+            case ECONOMY:
+                return 10;
+            default:
+                throw new IllegalArgumentException("Tipo de envío no reconocido");
+        }
     }
 
+    // Implementa SOLO validateShipment según README y tests del paquete lab1_2ImplementacionPrompting.
+    // Requisitos:
+    // - No cambies firma, imports, modelo ShipmentValidationResult ni otros métodos.
+    // - Mantén el estilo de validación actual y mensajes deterministas.
+    // - Evalúa peso, dimensionsCm[3] y destinationCode con las reglas exactas de tests/README.
+    // - Devuelve ShipmentValidationResult(true,"OK") cuando cumpla; en error, false + motivo exacto esperado.
+    // - No uses valores mágicos inventados: toma límites de los tests.
+    // Caso ancla: usa un caso válido y uno inválido de tests para ajustar mensajes.
     @Override
     public ShipmentValidationResult validateShipment(double weightKg, int[] dimensionsCm, String destinationCode) {
         if (weightKg <= 0) {
@@ -82,7 +115,18 @@ public class ShippingCalculatorServiceImpl implements ShippingCalculatorService 
             return new ShipmentValidationResult(false, "Codigo postal invalido");
         }
 
-        // TDD bootstrap: respuesta temporal hasta implementar reglas de negocio.
-        return new ShipmentValidationResult(false, "PENDING_IMPLEMENTATION");
+        // Reglas exactas:
+        // Mira plantilla planificacion_lab_1.2.md y README, así como los tests del paquete lab1_2ImplementacionPrompting para definir reglas exactas de negocio.
+        if (weightKg > 30) {
+            return new ShipmentValidationResult(false, "Peso invalido: excede el limite de 30kg");
+        }
+        if (dimensionsCm[0] > 100 || dimensionsCm[1] > 100 || dimensionsCm[2] > 100) {
+            return new ShipmentValidationResult(false, "Dimensiones invalidas: cada dimension debe ser menor o igual a 100cm");
+        }
+        if (!destinationCode.matches("\\d{5}")) {
+            return new ShipmentValidationResult(false, "Codigo postal invalido: debe ser un codigo de 5 digitos");
+        }
+
+        return new ShipmentValidationResult(true, "OK");
     }
 }

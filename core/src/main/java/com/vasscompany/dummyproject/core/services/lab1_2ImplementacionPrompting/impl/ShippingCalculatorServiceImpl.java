@@ -91,7 +91,7 @@ public class ShippingCalculatorServiceImpl implements ShippingCalculatorService 
             case ECONOMY:
                 return 10;
             default:
-                throw new IllegalArgumentException("Tipo de envío no reconocido");
+                throw new IllegalArgumentException("Tipo de envío no reconocido: " + shippingType);
         }
     }
 

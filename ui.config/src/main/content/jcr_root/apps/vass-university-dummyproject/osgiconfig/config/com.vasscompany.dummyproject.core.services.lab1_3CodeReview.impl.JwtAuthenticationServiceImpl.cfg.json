@@ -1,0 +1,4 @@
+{
+  "auth.enabled": true,
+  "jwt.secret": "my-secret-key-12345"
+}

@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 
 public class ProductInventoryItem {
 
-    private String sku;
-    private String name;
-    private BigDecimal unitPrice;
+    private final String sku;
+    private final String name;
+    private final BigDecimal unitPrice;
     private int stock;
     public ProductInventoryItem(String sku, String name, BigDecimal unitPrice, int stock) {
         this.sku = sku;
@@ -44,6 +44,27 @@ public class ProductInventoryItem {
             throw new IllegalArgumentException("Stock cannot be negative");
         }
         this.stock = newStock;
+    }
+
+    // Completa esta clase correctamente para uso en mapas y tests.
+// Añade hashCode coherente con equals usando sku.
+// Añade toString legible para depuración.
+// Mantén la clase simple y sin Lombok.
+    // No cambies la lógica actual de updateStock.
+// Solo completa hashCode y toString de forma coherente con equals.
+    @Override
+    public int hashCode() {
+        return sku.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "ProductInventoryItem{" +
+                "sku='" + sku + '\'' +
+                ", name='" + name + '\'' +
+                ", unitPrice=" + unitPrice +
+                ", stock=" + stock +
+                '}';
     }
 
     @Override

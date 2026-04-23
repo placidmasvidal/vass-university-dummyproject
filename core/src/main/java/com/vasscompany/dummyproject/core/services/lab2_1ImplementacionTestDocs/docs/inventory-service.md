@@ -1,82 +1,104 @@
 # Product Inventory Service
 
-Servicio de inventario para un proyecto Java / AEM-like.
-
 ## Objetivo
 
-El objetivo de este laboratorio es construir un servicio reutilizable para gestionar productos en inventario, controlar el stock disponible y calcular métricas agregadas como el stock total y el valor total del inventario.
+En este laboratorio estoy implementando un servicio de inventario para un proyecto Java / AEM-like, con la idea de practicar generación simultánea de código, tests y documentación con ayuda de Copilot.
 
-La idea es hacerlo siguiendo una estructura parecida a la de un proyecto AEM real: interfaz de servicio, implementación OSGi, tests unitarios y documentación técnica, aunque en este caso la persistencia sea solo en memoria.
+El servicio está planteado como un servicio OSGi reutilizable y utiliza almacenamiento en memoria para centrarse en la lógica de negocio, sin entrar todavía en persistencia real con JCR.
 
-## Estado actual del laboratorio
+## Estado actual
 
-En el estado actual he podido avanzar sobre todo en el contrato y en la estructura base del ejercicio.
+A estas alturas ya tengo bastante avanzado el contrato del servicio y buena parte de la implementación principal.
 
-Por un lado, ya está creada la interfaz `ProductInventoryService`, donde quedan definidos los métodos principales del servicio: alta de producto, actualización de stock, eliminación, consulta de disponibilidad, recuperación por SKU, cálculo de stock total y cálculo del valor total del inventario.
+La interfaz `ProductInventoryService` recoge las operaciones básicas del inventario: registro de productos, eliminación, actualización de stock, consulta de disponibilidad, recuperación por SKU, cálculo de stock total y cálculo del valor total del inventario.
 
-También está creado el modelo `ProductInventoryItem`, con sus atributos básicos (`sku`, `name`, `unitPrice` y `stock`) y sus getters.
+También está creado el modelo `ProductInventoryItem`, que representa cada producto con su SKU, nombre, precio unitario y stock.
 
-La implementación `ProductInventoryServiceImpl` está preparada como servicio OSGi y ya parte de un `ConcurrentHashMap` para guardar los productos en memoria, pero en este punto todavía no están implementadas las reglas de negocio ni las validaciones.
+En la implementación `ProductInventoryServiceImpl`, Copilot ya ha generado la mayor parte de la lógica de negocio principal:
+- validación de SKU, nombre, precio y stock inicial,
+- control de SKU duplicado,
+- actualización de stock,
+- eliminación de productos,
+- comprobación de disponibilidad,
+- cálculo de stock total,
+- y cálculo del valor total con `BigDecimal`.
 
-En cuanto a tests, la clase `ProductInventoryServiceImplTest` ya está arrancada y contiene identificados varios casos importantes, pero todavía faltan las aserciones y completar la cobertura real.
+La persistencia se hace en memoria mediante un `ConcurrentHashMap`.
 
-## Responsabilidades previstas del servicio
+## Qué funciona ya
 
-- Registrar productos en inventario
-- Actualizar el stock de productos existentes
-- Eliminar productos por SKU
-- Consultar si un producto tiene stock suficiente
-- Recuperar un producto concreto
-- Calcular el stock total del inventario
-- Calcular el valor total del inventario
+En la implementación actual ya está planteado correctamente:
 
-## Reglas de validación previstas
+- registro de productos con validaciones básicas,
+- normalización del SKU con `trim()`,
+- rechazo de precios no válidos,
+- rechazo de stock inicial negativo,
+- rechazo de SKU duplicado,
+- actualización de stock sin permitir que quede en negativo,
+- cálculo agregado de stock total,
+- cálculo agregado del valor total del inventario.
 
-Las reglas que quiero aplicar en la implementación son estas:
+## Qué queda pendiente
 
-- El SKU debe ser obligatorio y único
-- El nombre debe ser obligatorio
-- El precio unitario debe ser mayor que cero
-- El stock inicial no puede ser negativo
-- No se debe permitir operar sobre SKUs inexistentes
-- No se debe permitir una actualización de stock que deje el valor final en negativo
+Aunque la implementación ya está bastante avanzada, todavía me quedan algunos puntos para cerrarlo bien:
+
+- completar métodos auxiliares privados que la implementación usa para centralizar validaciones,
+- terminar de completar `ProductInventoryItem` con `hashCode()` y `toString()`,
+- revisar si añado también el listado completo de productos para dejar el contrato más alineado con el enunciado,
+- completar los tests unitarios con asserts reales,
+- y hacer una última revisión para que la documentación refleje exactamente el comportamiento final.
+
+## Reglas de validación
+
+Las reglas que se están aplicando o que quiero dejar cerradas en la versión final son:
+
+- el SKU es obligatorio y único,
+- el nombre es obligatorio,
+- el precio unitario debe ser mayor que cero,
+- el stock inicial no puede ser negativo,
+- no se permite operar sobre un SKU inexistente,
+- la actualización de stock no puede dejar el stock final en negativo,
+- y no se deben aceptar cantidades inválidas en operaciones de stock.
 
 ## Decisiones de diseño
 
 ### Servicio OSGi
 
-La implementación está planteada como servicio OSGi, porque encaja con la arquitectura del proyecto dummy y con la forma habitual de organizar lógica reutilizable en AEM.
+La implementación se hace como servicio OSGi porque encaja con la arquitectura del proyecto y con la forma habitual de organizar lógica reutilizable en AEM. La documentación del proyecto insiste en separar bien servicios, implementación y tests unitarios dentro de `core`, que es justo el enfoque seguido aquí. :contentReference[oaicite:12]{index=12} :contentReference[oaicite:13]{index=13}
 
 ### Almacenamiento en memoria
 
-Para este laboratorio no se utiliza JCR ni acceso a repositorio real. El inventario se guardará en memoria con un `ConcurrentHashMap`, ya que el objetivo del ejercicio no es la persistencia sino practicar implementación, tests y documentación de forma simultánea.
+Para este laboratorio no uso JCR ni repositorio real. El objetivo es centrarse en la lógica del servicio y en el trabajo simultáneo entre implementación, tests y documentación.
 
-### Uso de BigDecimal
+### BigDecimal para importes
 
-Para importes y cálculos económicos se utilizará `BigDecimal`, para evitar problemas de precisión que tendríamos con tipos numéricos de coma flotante.
+He utilizado `BigDecimal` para los precios y para el cálculo del valor total del inventario, porque es la opción adecuada para evitar errores de precisión en cálculos económicos.
 
-## Limitaciones actuales
+### Estructura por capas
 
-Ahora mismo el servicio todavía no está terminado, así que esta documentación describe sobre todo el diseño previsto y el estado de avance, no una versión completamente cerrada.
+He intentado mantener la separación entre contrato, implementación y pruebas, siguiendo la idea de arquitectura por capas y evitando mezclar la lógica de negocio con servlets o con otras capas del proyecto. :contentReference[oaicite:14]{index=14} :contentReference[oaicite:15]{index=15}
 
-Además, aunque el laboratorio intenta parecerse a un caso real de AEM, de momento:
+## Limitaciones
 
-- no hay persistencia en JCR,
-- no hay servlet de exposición,
-- no hay integración con Sling Models,
-- y la cobertura de tests todavía no está completada.
+La versión actual todavía tiene limitaciones claras:
 
-## Pendientes
+- no persiste datos entre reinicios,
+- no expone todavía un servlet ni un Sling Model,
+- los tests unitarios aún no están terminados,
+- y la implementación necesita una última pasada de cierre para quedar completamente consistente.
 
-Los siguientes pasos que me faltan para cerrar bien el laboratorio son:
+## Siguientes pasos
 
-1. Implementar la lógica completa en `ProductInventoryServiceImpl`
-2. Añadir validaciones explícitas y mensajes de error claros
-3. Completar los tests unitarios con casos de éxito y error
-4. Revisar que la documentación quede totalmente alineada con el comportamiento final
+Los siguientes pasos que me faltan para cerrar el laboratorio son:
+
+1. completar los helpers privados y los detalles que faltan en la implementación,
+2. terminar `ProductInventoryItem`,
+3. completar los tests unitarios,
+4. revisar la interfaz para alinearla del todo con el enunciado,
+5. y actualizar esta documentación con el comportamiento final exacto.
 
 ## Conclusión
 
-De momento considero que el laboratorio está bien encaminado en cuanto a estructura y contrato, pero todavía está en una fase intermedia.
+Considero que el laboratorio ya está bien encarrilado. La parte más difícil, que era aterrizar el contrato y arrancar la lógica principal del servicio, ya está bastante avanzada.
 
-Lo más avanzado ahora mismo es la definición del servicio y del modelo. Lo que falta realmente es completar la lógica de negocio, terminar los tests y actualizar esta documentación para que refleje el comportamiento final exacto.
+Lo que me queda ahora no es tanto rediseñar, sino rematar bien: cerrar helpers, completar tests y dejar completamente sincronizados código y documentación.

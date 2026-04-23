@@ -62,6 +62,6 @@ public interface ProductInventoryService {
 
     Collection<ProductInventoryItem> listAllProducts();
 
-
+    Collection<ProductInventoryItem> getAllProducts();
 
 }

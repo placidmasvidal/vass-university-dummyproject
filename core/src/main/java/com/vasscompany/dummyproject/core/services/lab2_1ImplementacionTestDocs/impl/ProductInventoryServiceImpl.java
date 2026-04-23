@@ -81,8 +81,12 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
         inventory.remove(normalizedSku);
     }
 
+    // Refuerza isProductAvailable para rechazar requiredQuantity <= 0 con IllegalArgumentException.
     @Override
     public boolean isProductAvailable(String sku, int requiredQuantity) {
+        if (requiredQuantity <= 0) {
+            throw new IllegalArgumentException("Required quantity must be greater than zero");
+        }
         String normalizedSku = normalizeSku(sku);
         ProductInventoryItem item = getExistingProduct(normalizedSku);
         return item.getStock() >= requiredQuantity;
@@ -104,6 +108,38 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
         return inventory.values().stream()
                 .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getStock())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    // Añade los métodos privados que faltan para que esta clase compile.
+// Implementa:
+// - normalizeSku(String sku): valida que no sea null ni vacío tras trim y devuelve el SKU normalizado
+// - getExistingProduct(String normalizedSku): devuelve el producto existente o lanza IllegalArgumentException si no existe
+// Mantén mensajes de error claros y coherentes con el resto de la clase.
+
+    private String normalizeSku(String sku) {
+        if (sku == null || sku.trim().isEmpty()) {
+            throw new IllegalArgumentException("SKU is required and cannot be empty");
+        }
+        return sku.trim();
+    }
+
+    private ProductInventoryItem getExistingProduct(String normalizedSku) {
+        ProductInventoryItem item = inventory.get(normalizedSku);
+        if (item == null) {
+            throw new IllegalArgumentException("SKU does not exist: " + normalizedSku);
+        }
+        return item;
+    }
+
+    @Override
+    public Collection<ProductInventoryItem> listAllProducts() {
+        return inventory.values();
+    }
+
+    // Implementa getAllProducts devolviendo una vista segura/simple de los productos registrados.
+    @Override
+    public Collection<ProductInventoryItem> getAllProducts() {
+        return inventory.values();
     }
 
 }

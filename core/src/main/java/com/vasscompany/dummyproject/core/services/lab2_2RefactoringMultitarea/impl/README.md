@@ -3,35 +3,37 @@
 ## Objetivo
 
 Refactorizar un módulo **legacy** dentro de un proyecto **Java / AEM-like** manteniendo los
-**tests como red de seguridad**, usando IA para mejorar **código + tests + documentación**
+**tests como red de seguridad**, usando IA para mejorar **código, tests y documentación**
 sin alterar la funcionalidad observable.
 
-El objetivo no es “reescribir desde cero”, sino **mejorar la estructura interna** del módulo
-sin romper el comportamiento existente.
+El objetivo del laboratorio no es rehacer el servicio desde cero, sino **mejorar su diseño interno**
+de forma segura, incremental y verificable.
 
 ---
 
-## Duración Estimada
+## Duración estimada
 
 **2-3 horas**
 
 ---
 
-## Contexto del Ejercicio
+## Contexto del ejercicio
 
-En el laboratorio original en Python se trabaja sobre un módulo `order_processor.py` con tests
-existentes. En esta adaptación, el equivalente será un **servicio OSGi legacy de procesamiento de pedidos**,
-ubicado en el módulo `core`, con una implementación funcional pero con problemas típicos de mantenibilidad:
+En el laboratorio original en Python se trabaja sobre un módulo `order_processor.py` con tests ya
+existentes. En esta adaptación, el equivalente será un **servicio OSGi legacy de procesamiento de pedidos**
+dentro del módulo `core` del proyecto dummy.
+
+El punto de partida será una implementación funcional pero con problemas típicos de mantenibilidad:
 
 - métodos demasiado largos,
 - validaciones mezcladas con lógica de negocio,
 - uso de `magic strings`,
 - responsabilidades mezcladas,
-- logging mejorable,
+- logging poco expresivo,
 - documentación insuficiente,
-- y tests existentes que deben servir como red de seguridad.
+- y tests que deben actuar como red de seguridad.
 
-El objetivo es refactorizar **manteniendo exactamente la funcionalidad**, mejorando a la vez:
+El objetivo es refactorizar **sin cambiar el comportamiento observable**, mejorando a la vez:
 
 - legibilidad,
 - estructura,
@@ -40,17 +42,20 @@ El objetivo es refactorizar **manteniendo exactamente la funcionalidad**, mejora
 - y documentación técnica/funcional.
 
 > **Importante:** este laboratorio trata de **refactoring seguro**, no de rediseño libre.
-> Si un cambio mejora mucho el diseño pero altera el contrato funcional, no cuenta como válido.
+> Si un cambio mejora el diseño pero altera el contrato funcional, no se considera válido.
 
 ---
 
 ## Relación con la arquitectura del proyecto
 
-La arquitectura del proyecto dummy separa claramente capas de presentación, aplicación,
-servicios y datos, y sitúa la lógica de negocio en `core`, la configuración OSGi en `ui.config`
-y los tests en sus módulos correspondientes. También fomenta el uso de **servicios OSGi**,
-**inyección de dependencias**, **separación de responsabilidades** y código testeable. Además,
-el proyecto compila con Maven y tiene configurado `maven-surefire-plugin` para tests unitarios. 
+El proyecto dummy sigue una arquitectura AEM multi-módulo con una separación clara entre
+presentación, lógica de aplicación, servicios y configuración. La lógica Java reutilizable vive en el
+módulo `core`, la configuración OSGi en `ui.config`, y los tests unitarios en `core/src/test/java`.
+Además, el proyecto compila con Maven, usa arquitectura por capas y está orientado a servicios OSGi,
+inyección de dependencias y código testeable. fileciteturn0file0 fileciteturn0file1
+
+A nivel de build, el proyecto tiene configurado Maven con compilación sobre **Java 21** y ejecución de
+pruebas mediante **Surefire**, por lo que este laboratorio debe encajar con ese flujo real. fileciteturn0file2
 
 Este laboratorio debe respetar ese enfoque:
 
@@ -64,9 +69,9 @@ Este laboratorio debe respetar ese enfoque:
 
 ## Qué vas a refactorizar
 
-### Escenario Java / AEM-like propuesto
+### Escenario Java / AEM propuesto
 
-Trabajarás sobre una implementación legacy parecida a esta responsabilidad funcional:
+Trabajarás sobre una implementación legacy con una responsabilidad funcional como esta:
 
 - recibir datos de un pedido,
 - validar entrada,
@@ -75,7 +80,7 @@ Trabajarás sobre una implementación legacy parecida a esta responsabilidad fun
 - devolver un resultado de procesamiento,
 - y registrar trazas de ejecución.
 
-El equivalente del `order_processor.py` original será un servicio del estilo:
+El equivalente del `order_processor.py` original será un servicio con una estructura similar a esta:
 
 ```text
 core/src/main/java/com/vasscompany/dummyproject/core/services/lab2_2RefactoringMultitarea/
@@ -94,7 +99,7 @@ core/src/main/java/com/vasscompany/dummyproject/core/services/lab2_2RefactoringM
 └── order-processing-service.md
 ```
 
-> Puedes ajustar los nombres exactos si ya has empezado a crear el ejercicio con otra convención,
+> Puedes ajustar los nombres exactos si ya arrancaste el laboratorio con otra convención,
 > pero mantén la idea: **un servicio legacy, una versión refactorizada, tests y documentación**.
 
 ---
@@ -103,35 +108,35 @@ core/src/main/java/com/vasscompany/dummyproject/core/services/lab2_2RefactoringM
 
 ### `LegacyOrderProcessingServiceImpl.java`
 
-Este archivo debe simular el módulo legacy que “funciona” pero es difícil de mantener.
+Este archivo debe simular el módulo legacy que “funciona”, pero cuesta mantener.
 
 Características recomendadas del legado:
 
 - método principal demasiado largo, por ejemplo `processOrder(...)`,
-- parámetros poco expresivos,
+- parámetros o variables poco expresivos,
 - `if/else` anidados,
 - `magic strings` como `"B2C"`, `"B2B"`, `"VIP"`, `"WEB"`,
 - validaciones dispersas,
-- descuentos mezclados con validaciones,
+- descuentos mezclados con cálculo,
 - construcción manual del resultado,
-- logs poco útiles o demasiado genéricos,
+- logs poco útiles,
 - y ausencia de Javadoc útil.
 
 ### `OrderProcessingServiceImpl.java`
 
 Será la versión refactorizada que:
 
-- conserva comportamiento,
+- conserva el comportamiento,
 - mejora nombres,
 - extrae métodos privados,
-- separa validación, cálculo y ensamblado de resultado,
+- separa validación, cálculo y ensamblado del resultado,
 - mejora la legibilidad,
 - y añade documentación.
 
 ### `OrderProcessingServiceImplTest.java`
 
 Debe verificar que la versión refactorizada mantiene el comportamiento esperado y cubrir también
-casos edge identificados durante el proceso.
+casos edge identificados durante el refactor.
 
 ### `order-processing-service.md`
 
@@ -187,7 +192,7 @@ core/src/main/java/com/vasscompany/dummyproject/core/services/lab2_2RefactoringM
 └── patrones.md
 ```
 
-2. Abre **simultáneamente** en tu IDE:
+2. Abre simultáneamente en tu IDE:
    - `LegacyOrderProcessingServiceImpl.java`
    - `OrderProcessingService.java`
    - `OrderProcessingServiceImpl.java`
@@ -196,13 +201,13 @@ core/src/main/java/com/vasscompany/dummyproject/core/services/lab2_2RefactoringM
    - `.copilot-context/arquitectura.md`
    - `.copilot-context/patrones.md`
 
-3. Ejecuta tests para obtener baseline:
+3. Ejecuta los tests para obtener una baseline:
 
 ```bash
 mvn -pl core test -Dtest=OrderProcessingServiceImplTest
 ```
 
-> Si todavía no has escrito tests suficientes, primero crea una baseline mínima que capture el
+> Si todavía no has escrito tests suficientes, crea primero una baseline mínima que capture el
 > comportamiento observable del legacy.
 
 ---
@@ -220,17 +225,17 @@ Antes de refactorizar, entiende **qué hace realmente** el legado.
    - condiciones especiales por tipo de cliente o canal,
    - side effects relevantes,
    - y excepciones o retornos especiales.
-3. Documenta comportamiento actual aunque no te guste.
+3. Documenta el comportamiento actual aunque no te guste.
 4. Añade o ajusta tests para reflejar lo que el código hace **de verdad**, no lo que “debería” hacer.
 
 #### Preguntas guía
 
 - ¿Qué validaciones están mezcladas con la lógica de cálculo?
 - ¿Qué nombres hacen difícil entender el flujo?
-- ¿Hay `magic strings` que deberían ser `enum`?
+- ¿Hay `magic strings` que deberían ser `enum` o constantes?
 - ¿Existen ramas duplicadas o casi duplicadas?
 - ¿Hay bloques `try/catch` demasiado amplios?
-- ¿El servicio mezcla responsabilidades de validación, cálculo y formateo del resultado?
+- ¿El servicio mezcla validación, cálculo y formateo del resultado?
 - ¿Hay logs con poco valor diagnóstico?
 
 **Output esperado:**
@@ -325,7 +330,7 @@ evolucionen juntos.
 
 ### Paso 5: Mejorar tests (30 min)
 
-Ahora que el código es más claro, mejora también el suite de tests.
+Ahora que el código es más claro, mejora también la suite de tests.
 
 #### Objetivos de esta fase
 
@@ -503,12 +508,12 @@ Crea el archivo `reflexion_lab_2.2.md` con tus observaciones.
 
 ---
 
-## Criterios de Aceptación
+## Criterios de aceptación
 
 El laboratorio se considera completo cuando:
 
 - [ ] El código fue refactorizado y es más mantenible
-- [ ] TODOS los tests originales relevantes siguen pasando
+- [ ] Todos los tests originales relevantes siguen pasando
 - [ ] La cobertura se mantiene o mejora
 - [ ] La documentación fue actualizada y refleja la estructura final
 - [ ] El código resultante es más legible y modular
@@ -517,11 +522,11 @@ El laboratorio se considera completo cuando:
 
 ---
 
-## Tips y Ayuda
+## Tips y ayuda
 
 ### Si te quedas atascado
 
-1. **No entiendes el legado:**
+1. **No entiendes el legacy:**
    - ejecuta ejemplos concretos,
    - documenta comportamiento observable,
    - y escribe tests antes de tocar demasiado.

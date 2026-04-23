@@ -31,13 +31,6 @@ public class ProductInventoryItem {
         return stock;
     }
 
-// Completa este modelo de dominio para que sea usable por el servicio.
-// Manténlo simple, sin Lombok.
-// Añade lo necesario para trabajar bien con inventario en memoria:
-// equals/hashCode por SKU, toString y una forma controlada de actualizar stock
-// o de crear una copia con stock distinto.
-// No metas lógica de negocio compleja aquí.
-
     public void updateStock(int quantityChange) {
         int newStock = this.stock + quantityChange;
         if (newStock < 0) {
@@ -46,12 +39,6 @@ public class ProductInventoryItem {
         this.stock = newStock;
     }
 
-    // Completa esta clase correctamente para uso en mapas y tests.
-// Añade hashCode coherente con equals usando sku.
-// Añade toString legible para depuración.
-// Mantén la clase simple y sin Lombok.
-    // No cambies la lógica actual de updateStock.
-// Solo completa hashCode y toString de forma coherente con equals.
     @Override
     public int hashCode() {
         return sku.hashCode();

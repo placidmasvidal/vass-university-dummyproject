@@ -4,128 +4,132 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProductInventoryServiceImplTest {
 
     private final ProductInventoryServiceImpl service = new ProductInventoryServiceImpl();
 
-// Casos mínimos que deben cubrir los tests:
-// Altas y bajas
-// agregar producto válido
-// rechazar SKU duplicado
-// eliminar producto existente
-// intentar eliminar SKU inexistente
-
-// Validaciones
-// rechazar SKU nulo o vacío
-// rechazar nombre nulo o vacío
-// rechazar precio cero o negativo
-// rechazar stock inicial negativo
-// rechazar decrementos que dejen stock negativo
-// rechazar operaciones con amount cero o negativo
-
-// Comportamiento funcional
-// comprobar stock suficiente
-// calcular unidades totales
-// calcular valor total del inventario con BigDecimal
-// recuperar producto por SKU
-// listar productos registrados
-// Casos edge
-// SKU con espacios alrededor
-// grandes cantidades de stock
-// precios con decimales
-// inventario vacío
-// concurrencia básica si decides endurecer el laboratorio
-
-    // Completa esta clase como test unitario puro con JUnit 5.
-// Usa el servicio instanciado directamente.
-// Añade asserts reales para:
-// - alta válida
-// - SKU duplicado
-// - SKU vacío
-// - nombre vacío
-// - precio cero o negativo
-// - stock inicial negativo
-// - eliminar SKU existente
-// - eliminar SKU inexistente
-// - updateStock positivo
-// - updateStock negativo válido
-// - updateStock que deja stock negativo
-// - isProductAvailable
-// - getTotalStock
-// - getTotalInventoryValue con BigDecimal
-// Los nombres de test deben ser descriptivos y el código legible.
-
-    // Completa esta clase de test con JUnit 5 usando instancia directa del servicio.
-// Añade tests reales con assertions para:
-// - registerProduct válido
-// - SKU duplicado
-// - SKU vacío
-// - nombre vacío
-// - precio <= 0
-// - stock inicial negativo
-// - removeProduct existente
-// - removeProduct inexistente
-// - updateStock positivo
-// - updateStock cero
-// - updateStock que deja stock negativo
-// - isProductAvailable
-// - getTotalStock
-// - getTotalInventoryValue con BigDecimal
-
     @Test
-    public void testRegisterProduct_Valid() {
-        service.registerProduct("SKU123", "Test Product", new BigDecimal("9.99"), 10);
+    public void testRegisterProductValid() {
+        service.registerProduct("SKU123", "Test Product", new BigDecimal("10.00"), 100);
         assertTrue(service.getProduct("SKU123").isPresent());
     }
 
     @Test
-    public void testRegisterProduct_DuplicateSKU() {
-        service.registerProduct("SKU123", "Test Product", new BigDecimal("9.99"), 10);
-        try {
-            service.registerProduct("SKU123", "Another Product", new BigDecimal("19.99"), 5);
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains("SKU already exists"));
-        }
+    public void testRegisterProductDuplicateSKU() {
+        service.registerProduct("SKU123", "Test Product", new BigDecimal("10.00"), 100);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.registerProduct("SKU123", "Another Product", new BigDecimal("20.00"), 50);
+        });
+        assertTrue(exception.getMessage().contains("SKU already exists"));
     }
 
     @Test
-    public void testRegisterProduct_EmptySKU() {
-        try {
-            service.registerProduct("   ", "Test Product", new BigDecimal("9.99"), 10);
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains("SKU cannot be null or empty"));
-        }
+    public void testRegisterProductEmptySKU() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.registerProduct("   ", "Test Product", new BigDecimal("10.00"), 100);
+        });
+        assertTrue(exception.getMessage().contains("SKU is required"));
     }
 
     @Test
-    public void testRegisterProduct_EmptyName() {
-        try {
-            service.registerProduct("SKU124", "   ", new BigDecimal("9.99"), 10);
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains("Name cannot be null or empty"));
-        }
+    public void testRegisterProductEmptyName() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.registerProduct("SKU124", "   ", new BigDecimal("10.00"), 100);
+        });
+        assertTrue(exception.getMessage().contains("Name is required"));
     }
 
     @Test
-    public void testRegisterProduct_NegativePrice() {
-        try {
-            service.registerProduct("SKU125", "Test Product", new BigDecimal("-1.00"), 10);
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains("Unit price must be greater than zero"));
-        }
+    public void testRegisterProductInvalidPrice() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.registerProduct("SKU125", "Test Product", new BigDecimal("-5.00"), 100);
+        });
+        assertTrue(exception.getMessage().contains("Unit price must be greater than zero"));
     }
 
     @Test
-    public void testRegisterProduct_NegativeStock() {
-        try {
-            service.registerProduct("SKU126", "Test Product", new BigDecimal("9.99"), -5);
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains("Initial stock cannot be negative"));
-        }
+    public void testRegisterProductNegativeStock() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.registerProduct("SKU126", "Test Product", new BigDecimal("10.00"), -10);
+        });
+        assertTrue(exception.getMessage().contains("Initial stock cannot be negative"));
+    }
+
+    @Test
+    public void testRemoveProductExisting() {
+        service.registerProduct("SKU127", "Test Product", new BigDecimal("10.00"), 100);
+        service.removeProduct("SKU127");
+        assertTrue(service.getProduct("SKU127").isEmpty());
+    }
+
+    @Test
+    public void testRemoveProductNonExisting() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.removeProduct("SKU128");
+        });
+        assertTrue(exception.getMessage().contains("SKU does not exist"));
+    }
+
+    @Test
+    public void testUpdateStockPositive() {
+        service.registerProduct("SKU129", "Test Product", new BigDecimal("10.00"), 100);
+        service.updateStock("SKU129", 50);
+        assertTrue(service.getProduct("SKU129").get().getStock() == 150);
+    }
+
+    @Test
+    public void testUpdateStockZero() {
+        service.registerProduct("SKU130", "Test Product", new BigDecimal("10.00"), 100);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.updateStock("SKU130", 0);
+        });
+        assertTrue(exception.getMessage().contains("Quantity change cannot be zero"));
+    }
+
+    @Test
+    public void testUpdateStockNegativeResult() {
+        service.registerProduct("SKU131", "Test Product", new BigDecimal("10.00"), 100);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.updateStock("SKU131", -150);
+        });
+        assertTrue(exception.getMessage().contains("Stock cannot be negative"));
     }
 
 
+    @Test
+    public void testIsProductAvailable() {
+        service.registerProduct("SKU132", "Test Product", new BigDecimal("10.00"), 100);
+        assertTrue(service.isProductAvailable("SKU132", 50));
+        assertFalse(service.isProductAvailable("SKU132", 150));
+    }
+
+    @Test
+    public void testGetTotalStock() {
+        service.registerProduct("SKU133", "Product 1", new BigDecimal("10.00"), 100);
+        service.registerProduct("SKU134", "Product 2", new BigDecimal("20.00"), 50);
+        assertEquals(150, service.getTotalStock());
+    }
+
+    @Test
+    public void testGetTotalInventoryValue() {
+        service.registerProduct("SKU135", "Product 1", new BigDecimal("10.00"), 2);
+        service.registerProduct("SKU136", "Product 2", new BigDecimal("5.50"), 4);
+        assertEquals(new BigDecimal("42.00"), service.getTotalInventoryValue());
+    }
+
+    @Test
+    public void testGetAllProducts() {
+        service.registerProduct("SKU137", "Product 1", new BigDecimal("10.00"), 10);
+        service.registerProduct("SKU138", "Product 2", new BigDecimal("20.00"), 20);
+        assertEquals(2, service.getAllProducts().size());
+    }
 
 }

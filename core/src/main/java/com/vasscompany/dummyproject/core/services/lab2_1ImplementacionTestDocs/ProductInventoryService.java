@@ -27,18 +27,6 @@ import java.util.Optional;
  */
 public interface ProductInventoryService {
 
-    // Product Inventory Service
-
-//Servicio de inventario para un proyecto Java / AEM-like.
-
-// Objetivo
-//Gestionar productos, stock y métricas agregadas de inventario.
-
-// Reglas principales
-//- SKU obligatorio y único
-//- Stock no negativo
-//- Precio mayor que cero
-
     void registerProduct(String sku, String name, BigDecimal unitPrice, int initialStock);
 
     void updateStock(String sku, int quantityChange);
@@ -51,17 +39,9 @@ public interface ProductInventoryService {
 
     int getTotalStock();
 
-    // get total inventory value (sum of unit price * stock for all products)
     BigDecimal getTotalInventoryValue();
 
-// Deja esta interfaz coherente con el laboratorio.
-// Mantén los nombres actuales de métodos si no hace falta renombrarlos.
-// Añade el método que falta para listar todos los productos del inventario.
-// El contrato debe cubrir: alta, baja, actualización de stock, consulta por SKU,
-// disponibilidad, stock total y valor total del inventario.
-
-    Collection<ProductInventoryItem> listAllProducts();
-
     Collection<ProductInventoryItem> getAllProducts();
+
 
 }

@@ -131,11 +131,6 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
         return item;
     }
 
-    @Override
-    public Collection<ProductInventoryItem> listAllProducts() {
-        return inventory.values();
-    }
-
     // Implementa getAllProducts devolviendo una vista segura/simple de los productos registrados.
     @Override
     public Collection<ProductInventoryItem> getAllProducts() {

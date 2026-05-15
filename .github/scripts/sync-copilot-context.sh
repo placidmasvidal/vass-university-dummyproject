@@ -10,6 +10,7 @@ TEMPLATE_FILE="$GITHUB_DIR/copilot-instructions.template.md"
 
 ARQ_FILE="$CONTEXT_DIR/arquitectura.md"
 PAT_FILE="$CONTEXT_DIR/patrones.md"
+CONV_FILE="$CONTEXT_DIR/convenciones.md"
 COMMIT_FILE="$GITHUB_DIR/git-commit-instructions.md"
 
 mkdir -p "$GITHUB_DIR"
@@ -39,10 +40,9 @@ cat "$TEMPLATE_FILE" > "$OUTPUT_FILE"
   echo
   echo "---"
   echo
-  echo "## Extended architecture context"
+  echo "## Extended architecture and conventions context"
   echo
   echo "The following sections are synchronized from repository context files so Copilot can read additional project-specific details."
-  echo
   echo
   echo "### From .copilot-context/arquitectura.md"
   echo
@@ -53,6 +53,15 @@ cat "$TEMPLATE_FILE" > "$OUTPUT_FILE"
   echo "### From .copilot-context/patrones.md"
   echo
   sed '1d' "$PAT_FILE"
+
+  if [[ -f "$CONV_FILE" ]]; then
+    echo
+    echo "---"
+    echo
+    echo "### From .copilot-context/convenciones.md"
+    echo
+    sed '1d' "$CONV_FILE"
+  fi
 } >> "$OUTPUT_FILE"
 
 if [[ -f "$COMMIT_FILE" ]]; then
